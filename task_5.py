@@ -122,13 +122,16 @@ class OrderAutomation:
             except NoSuchElementException:
                 print("Finish button not found.")
 
-            try:
-                success_message = self.wait.until(
-                    EC.visibility_of_element_located((By.XPATH, "//h2[text()='THANK YOU FOR YOUR ORDER']")))
-                if success_message.is_displayed():
-                    order_status = "Success"
-            except TimeoutException:
-                order_status = "Failure"
+            if order_status == "Success":
+                try:
+                    success_message = self.wait.until(
+                        EC.visibility_of_element_located((By.XPATH, "//h2[text()='THANK YOU FOR YOUR ORDER']")))
+                    if success_message.is_displayed():
+                        order_status = "Success"
+                    else:
+                        order_status = "Failure"
+                except TimeoutException:
+                    order_status = "Failure"
 
             sheet_order_details.cell(row=int(order_id) + 1, column=6, value=order_status)
             self.driver.get("https://www.saucedemo.com/v1/")
